@@ -52,7 +52,7 @@ def write_to_drive():
             'name': ['test.sql.gz'],
             'parents': [backups_folder_id]
         }
-    media = MediaFileUpload('test.sql.gz',
+    media = MediaFileUpload('/backups/test.sql.gz',
                             mimetype='application/x-gzip-compressed',
                             resumable=True)
 
@@ -118,10 +118,10 @@ def main():
     db_name = os.environ.get('POSTGRESQL_DATABASE')
     db_pw = os.environ.get('POSTGRESQL_PASSWORD')
     dbs = list_postgres_databases(db_host, db_name, 5432, db_user, db_pw)
-    backup_postgres_db(db_host, db_name, 5432, db_user, db_pw, 'test.sql', True)
-    # print(os.listdir('/backups'))
-    compress_file('test.sql')
-    # print(os.listdir('/backups'))
+    backup_postgres_db(db_host, db_name, 5432, db_user, db_pw, '/backups/test.sql', True)
+    print(os.listdir('/backups'))
+    compress_file('/backups/test.sql')
+    print(os.listdir('/backups'))
     write_to_drive()
 
 if __name__ == "__main__":
