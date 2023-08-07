@@ -2,7 +2,7 @@ FROM postgres:15.1
 
 WORKDIR /code
 
-RUN mkdir /backups && chown 1001:1001 /backups
+# RUN mkdir /backups && chown 1001:1001 /backups
 
 RUN apt-get update -y && apt-get install -y python3.10 pip
 
