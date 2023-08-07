@@ -3,6 +3,7 @@ import json
 from oauth2client.service_account import ServiceAccountCredentials
 from googleapiclient.discovery import build
 from googleapiclient.http import MediaFileUpload
+from datetime import date
 import gzip
 import subprocess
 
@@ -23,7 +24,7 @@ def list_postgres_databases(host, database_name, port, user, password):
         print(e)
         exit(1)
 
-def write_to_drive():
+def write_to_drive(path, filename):
     # fp = open("auth.json")
     # json_secret = fp.read()
     # fp.close()
@@ -49,10 +50,10 @@ def write_to_drive():
     ).execute().get('files')[0].get('id')
 
     file_metadata = {
-            'name': ['test.sql.gz'],
+            'name': [filename],
             'parents': [backups_folder_id]
         }
-    media = MediaFileUpload('/tmp/test.sql.gz',
+    media = MediaFileUpload(path,
                             mimetype='application/x-gzip-compressed',
                             resumable=True)
 
@@ -117,12 +118,15 @@ def main():
     db_user = os.environ.get('POSTGRESQL_USER')
     db_name = os.environ.get('POSTGRESQL_DATABASE')
     db_pw = os.environ.get('POSTGRESQL_PASSWORD')
+
+    filename = "sdfp-db-" + date.today().strftime("%Y-%m-%d") + ".sql"
+    path = "/tmp/" + filename
     # dbs = list_postgres_databases(db_host, db_name, 5432, db_user, db_pw)
-    backup_postgres_db(db_host, db_name, 5432, db_user, db_pw, '/tmp/test.sql', True)
-    print(os.listdir('/tmp'))
-    compress_file('/tmp/test.sql')
-    print(os.listdir('/tmp'))
-    write_to_drive()
+    backup_postgres_db(db_host, db_name, 5432, db_user, db_pw, path, True)
+    compress_file(path)
+    path += ".gz"
+    filename += ".gz"
+    write_to_drive(path, filename)
 
 if __name__ == "__main__":
     main()
