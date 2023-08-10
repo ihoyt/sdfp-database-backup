@@ -25,10 +25,6 @@ def list_postgres_databases(host, database_name, port, user, password):
         exit(1)
 
 def write_to_drive(path, filename):
-    # fp = open("auth.json")
-    # json_secret = fp.read()
-    # fp.close()
-    # json_secret = json.loads(json_secret)
     json_secret = json.loads(os.environ.get('GOOGLE_JSON_KEY'))
     # google_drive_folder_id = os.environ.get('GOOGLE_DRIVE_FOLDER_ID')
     google_drive_folder_id = ''
