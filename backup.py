@@ -55,6 +55,7 @@ def write_to_drive(path, filename):
         }
     media = MediaFileUpload(path,
                             mimetype='application/x-gzip-compressed',
+                            # mimetype='application/octet-stream',
                             resumable=True)
 
     print("ATTEMPTING UPLOAD")
@@ -73,7 +74,7 @@ def backup_postgres_db(host, database_name, port, user, password, dest_file, ver
             process = subprocess.Popen(
                 ['pg_dump',
                  '--dbname=postgresql://{}:{}@{}:{}/{}'.format(user, password, host, port, database_name),
-                 '-Fc',
+                 '-Ft',
                  '-f', dest_file,
                  '-v'],
                 stdout=subprocess.PIPE
@@ -92,6 +93,8 @@ def backup_postgres_db(host, database_name, port, user, password, dest_file, ver
             process = subprocess.Popen(
                 ['pg_dump',
                  '--dbname=postgresql://{}:{}@{}:{}/{}'.format(user, password, host, port, database_name),
+                 '-Ft'
+                '-n', 'public'
                  '-f', dest_file],
                 stdout=subprocess.PIPE
             )
@@ -119,7 +122,7 @@ def main():
     db_name = os.environ.get('POSTGRESQL_DATABASE')
     db_pw = os.environ.get('POSTGRESQL_PASSWORD')
 
-    filename = "sdfp-db-" + date.today().strftime("%Y-%m-%d") + ".sql"
+    filename = "sdfp-db-" + date.today().strftime("%Y-%m-%d") + ".tar"
     path = "/tmp/" + filename
     # dbs = list_postgres_databases(db_host, db_name, 5432, db_user, db_pw)
     backup_postgres_db(db_host, db_name, 5432, db_user, db_pw, path, True)
